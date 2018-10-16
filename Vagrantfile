@@ -32,5 +32,8 @@ $START_CLOUD9_IDE = <<SCRIPT
   echo "Kiex: https://github.com/taylor/kiex (Elixir Manager)"
   echo "."
   echo "."
+  echo "How to use Kerl and Kiex: http://bit.ly/elixir-version-manager"
+  echo "."
+  echo "."
   echo "Now you can access Cloud9 on http://localhost:8181"  
 SCRIPT

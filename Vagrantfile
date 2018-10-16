@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "jacksonpires/curso-elixir"
   config.vm.box_version = "1.0.0"
  
-  config.vm.network :forwarded_port, guest: 3000, host: 4000 # phoenix
+  config.vm.network :forwarded_port, guest: 4000, host: 4000 # phoenix
   config.vm.network :forwarded_port, guest: 8181, host: 8181 # cloud9
 
   config.vm.provider "virtualbox" do |vb|

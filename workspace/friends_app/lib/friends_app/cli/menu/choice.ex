@@ -1,12 +1,12 @@
-defmodule FriendsApp.CLI.MenuChoice do
+defmodule FriendsApp.CLI.Menu.Choice do
   alias Mix.Shell.IO, as: Shell
-  alias FriendsApp.CLI.MenuItens
+  alias FriendsApp.CLI.Menu.Itens
   
   def start do
     Shell.cmd("clear")
     Shell.info("Escolha uma opção:")
     
-    menu_itens = MenuItens.all()
+    menu_itens = Itens.all()
     find_menu_item_by_index = &Enum.at(menu_itens, &1, :error)
         
     menu_itens
@@ -17,6 +17,7 @@ defmodule FriendsApp.CLI.MenuChoice do
     |> parse_answer()
     |> find_menu_item_by_index.()
     |> confirm_menu_item()
+    |> confirm_message()
   end
   
   defp display_options(options) do
@@ -51,7 +52,7 @@ defmodule FriendsApp.CLI.MenuChoice do
   defp confirm_menu_item(chosen_menu_item) do
     case chosen_menu_item do
       :error -> invalid_option()
-      _ -> confirm_message(chosen_menu_item)
+      _ -> chosen_menu_item
     end
   end
 

@@ -1,19 +1,20 @@
 defmodule FriendsApp.CLI.MenuChoice do
   alias Mix.Shell.IO, as: Shell
+  alias FriendsApp.CLI.MenuItens
   
   def start do
     Shell.cmd("clear")
     Shell.info("Escolha uma opção:")
     
-    menu_itens = FriendsApp.CLI.MenuItens.all()
-    find_menu_item_by_index = &Enum.at(menu_itens, &1)
+    menu_itens = MenuItens.all()
+    find_menu_item_by_index = &Enum.at(menu_itens, &1, :error)
         
     menu_itens
     |> Enum.map(&(&1.label))
     |> display_options()
-    |> generate_question
+    |> generate_question()
     |> Shell.prompt
-    |> parse_answer
+    |> parse_answer()
     |> find_menu_item_by_index.()
     |> confirm_menu_item()
   end
@@ -34,11 +35,27 @@ defmodule FriendsApp.CLI.MenuChoice do
   end
 
   defp parse_answer(answer) do
-    {option, _} = Integer.parse(answer)
-    option - 1
+    case Integer.parse(answer) do
+      :error -> invalid_option()
+      {option, _} -> option - 1
+    end
+  end
+  
+  defp invalid_option do
+    Shell.cmd("clear")
+    Shell.error("Opção Inválida!")
+    Shell.prompt("Pressione ENTER para tentar novamente.")
+    start()
   end
   
   defp confirm_menu_item(chosen_menu_item) do
+    case chosen_menu_item do
+      :error -> invalid_option()
+      _ -> confirm_message(chosen_menu_item)
+    end
+  end
+
+  defp confirm_message(chosen_menu_item) do
     Shell.cmd("clear")
     Shell.info("Você escolheu... [#{chosen_menu_item.label}]")
     
@@ -48,5 +65,4 @@ defmodule FriendsApp.CLI.MenuChoice do
       start()
     end
   end
-
 end

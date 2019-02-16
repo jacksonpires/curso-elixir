@@ -22,7 +22,12 @@ defmodule Mix.Tasks.Utils.AddFakeFriends do
   end
   
   defp ramdon_list_friend do
-    [ Faker.Name.PtBr.name(), Faker.Internet.email(), Faker.Phone.EnUs.phone() ]
+    %{
+      name: Faker.Name.PtBr.name(),
+      email: Faker.Internet.email(),
+      phone: Faker.Phone.EnUs.phone()
+    }
+    |> Map.values
   end
   
   defp save_csv_file(data) do

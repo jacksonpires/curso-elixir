@@ -16,7 +16,8 @@ defmodule FriendsApp.DB.CSV do
   end
   
   defp read do
-    File.read!("#{File.cwd!}/friends.csv")
+    Application.fetch_env!(:friends_app, :csv_file_path)
+    |> File.read!
     |> CSVParser.parse_string(headers: false)
     |> Enum.map( fn [email, name, phone] ->
       %Friend{name: name, email: email, phone: phone}
@@ -52,7 +53,8 @@ defmodule FriendsApp.DB.CSV do
     [list]
   end
   
-  defp save_csv_file(data) dos
-    File.write!("#{File.cwd!}/friends.csv", data, [:append])
+  defp save_csv_file(data) do
+    Application.fetch_env!(:friends_app, :csv_file_path)
+    |> File.write!(data, [:append])
   end
 end

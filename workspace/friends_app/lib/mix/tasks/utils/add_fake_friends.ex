@@ -33,6 +33,7 @@ defmodule Mix.Tasks.Utils.AddFakeFriends do
   end
   
   defp save_csv_file(data) do
-    File.write!("#{File.cwd!}/friends.csv", data, [:append])
+    Application.fetch_env!(:friends_app, :csv_file_path)
+    |> File.write!(data, [:append])
   end
 end

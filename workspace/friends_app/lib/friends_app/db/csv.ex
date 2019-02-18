@@ -8,11 +8,54 @@ defmodule FriendsApp.DB.CSV do
     case chosen_menu_item do
       %Menu{ id: :create, label: _ } -> create()
       %Menu{ id: :read, label: _ }   -> read()
-      %Menu{ id: :update, label: _ } -> Shell.info(">>>> UPDATE <<<<")
+      %Menu{ id: :update, label: _ } -> update()
       %Menu{ id: :delete, label: _ } -> delete()
     end
     
     FriendsApp.CLI.Menu.Choice.start()
+  end
+  
+  defp update do
+    Shell.cmd("clear")
+    
+    prompt_message("Digite o email do amigo que deseja atualizar:")
+    |> search_friend_by_email()
+    |> check_friend_found()
+    |> confirm_update()
+    |> do_update()
+  end
+  
+  defp confirm_update(friend) do
+    Shell.cmd("clear")
+    Shell.info("Encontramos...")
+    
+    show_friend(friend)
+        
+    case Shell.yes?("Deseja realmente autalizar esse amigo?") do
+      true -> friend
+      false -> :error
+    end
+  end
+  
+  defp do_update(friend) do
+    Shell.cmd("clear")
+    Shell.info("Agora você irá digitar os novos dados do seu amigo...")
+    
+    updated_friend = collect_data()
+    
+    get_struct_list_from_csv()
+    |> delete_friend_from_struct_list(friend)
+    |> friend_list_to_csv
+    |> prepare_list_to_save_csv
+    |> save_csv_file()
+    
+    updated_friend
+    |> transform_on_wrapped_list()
+    |> prepare_list_to_save_csv()
+    |> save_csv_file([:append])
+    
+    Shell.info("Amigo atualizado com sucesso!")
+    Shell.prompt("Pressione ENTER para continuar")
   end
   
   defp delete do
@@ -68,11 +111,11 @@ defmodule FriendsApp.DB.CSV do
         Shell.prompt("Pressione ENTER para continuar")
       
       _ ->
-        get_struct_list_from_csv
+        get_struct_list_from_csv()
         |> delete_friend_from_struct_list(friend)
-        |> friend_list_to_csv
-        |> prepare_list_to_save_csv
-        |> save_csv_file
+        |> friend_list_to_csv()
+        |> prepare_list_to_save_csv()
+        |> save_csv_file()
     
         Shell.info("Amigo excluído com sucesso!")
         Shell.prompt("Pressione ENTER para continuar")
